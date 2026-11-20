@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  api:
+    name: API (lint, test)
+    runs-on: ubuntu-latest
+    # Skipped until services/api has a package.json
+    if: ${{ hashFiles('services/api/package.json') != '' }}
+    defaults:
+      run:
+        working-directory: services/api
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: library
+          POSTGRES_PASSWORD: library
+          POSTGRES_DB: library
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U library"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://library:library@localhost:5432/library
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: services/api/package-lock.json
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm test --if-present
+
+  mobile:
+    name: Mobile (analyze, test)
+    runs-on: ubuntu-latest
+    # Skipped until apps/mobile has a pubspec.yaml
+    if: ${{ hashFiles('apps/mobile/pubspec.yaml') != '' }}
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  docs:
+    name: Docs sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Required docs exist
+        run: |
+          for f in README.md docs/prd/PRD.md docs/architecture/overview.md docs/domain/copy-state-machine.md; do
+            test -f "$f" || { echo "missing $f"; exit 1; }
+          done

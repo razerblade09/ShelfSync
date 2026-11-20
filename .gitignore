@@ -1,0 +1,38 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Env and secrets (never commit tag keys or JWT secrets)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Node / NestJS
+node_modules/
+dist/
+coverage/
+*.log
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+*.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+ios/Pods/
+android/.gradle/
+android/local.properties
+
+# Local databases
+*.sqlite
+*.db
+pgdata/
+
+# Scratch
+tools/nfc-spike/out/
