@@ -1,6 +1,6 @@
-# Library System
+# ShelfSync
 
-A mobile-first, **shelf-aware, offline-first** library management system for a school or university library.
+ShelfSync is a mobile-first, **shelf-aware, offline-first** library management system for a school or university library.
 
 > **Status: planning / pre-implementation.** Nothing in this repo is built yet. The folders below are the target structure; see [docs/prd/PRD.md](docs/prd/PRD.md) and [docs/open-questions.md](docs/open-questions.md).
 
